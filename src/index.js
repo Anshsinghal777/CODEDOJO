@@ -44,3 +44,9 @@ const InitializeConnections = async () => {
 InitializeConnections();
 
 
+// git status
+// git add .
+// git commit -m "updated UI and fixed navbar"
+// git push
+
+
