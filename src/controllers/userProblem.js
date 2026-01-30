@@ -3,7 +3,7 @@ import fetchIdByName from "../../tester2.js";
 import Problem from "../models/problem.js";
 import submitBatch from "../utils/ProblemUtility.js";
 import submitToken from "../utils/ProblemUtility.js";
-const createProblem = (req, res) => {
+const createProblem =  async (req, res) => {
 
     try{
          const {title,description,difficulty,tags, 
@@ -35,7 +35,7 @@ visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator
     return res.status(400).json({message : "No valid reference solutions or test cases provided."});
   }
 
- const tokenResult =  submitBatch(submissions);
+ const submitResult = await  submitBatch(submissions);
 
 
   
