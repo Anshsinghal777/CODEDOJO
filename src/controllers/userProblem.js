@@ -3,15 +3,33 @@ import fetchIdByName from "../../tester2.js";
 import Problem from "../models/problem.js";
 import {submitBatch} from "../utils/ProblemUtility.js";
 import {submitToken} from "../utils/ProblemUtility.js";
-const createProblem = async (req, res) => {
+ export const createProblem = async (req, res) => {
   try {
+
+      const {title,description,difficulty,tags, 
+visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator 
+         } =             req.body;
+
+
+        if (
+  !title ||
+  !description ||
+  !difficulty ||
+  !tags ||
+  !visibleTestCases?.length ||
+  !startCode?.length ||
+  !referenceSolution?.length
+)
+ {
+           return res.status(400).json({ message: "All fields are required" });
+         }
     const submissions = [];
 
-    for (const solution of req.body.referenceSolution) {
+    for (const solution of referenceSolution) {
       const langId = fetchIdByName(solution.language);
       if (!langId) throw new Error("Unsupported language");
 
-      for (const testCase of req.body.visibleTestCases) {
+      for (const testCase of visibleTestCases) {
         submissions.push({
           language_id: langId,
           source_code: solution.completeCode,
@@ -44,11 +62,147 @@ const createProblem = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-};
+}
 
 
 
-export default createProblem;
+
+export const updateProblem = async (req, res) => {
+
+  const    {id} = req.params;
+        const {title,description,difficulty,tags, 
+visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator 
+         } =             req.body;
+
+     if (
+  !title ||
+  !description ||
+  !difficulty ||
+  !tags ||
+  !visibleTestCases?.length ||
+  !startCode?.length ||
+  !referenceSolution?.length
+)
+ {
+           return res.status(400).json({ message: "All fields are required" });
+         }
+
+         if(!id){
+          return res.status(400).json({ message: "Problem ID is required" });
+         }
+
+         const dsaproblem =  await Problem.findById(id);
+         if(!dsaproblem){
+          return res.status(404).json({ message: "Problem not found" });
+         }
+
+
+  try{
+    const submissions = [];
+
+    for (const solution of referenceSolution) {
+      const langId = fetchIdByName(solution.language);
+      if (!langId) throw new Error("Unsupported language");
+
+      for (const testCase of visibleTestCases) {
+        submissions.push({
+          language_id: langId,
+          source_code: solution.completeCode,
+          stdin: testCase.input,
+          expected_output: testCase.output
+        });
+      }
+    }
+
+    const submitResult = await submitBatch(submissions);
+    const tokens = submitResult.map(r => r.token);
+    const testResult = await submitToken(tokens);
+
+    for (const test of testResult) {
+      if (test.status?.id !== 3) {
+        console.log(test.status.id);
+        return res.status(400).json({
+          message: "Reference solution failed test cases"
+        });
+      }
+    }
+
+
+    const updatedProblem = await Problem.findByIdAndUpdate(id,{...req.body},{runValidators:true} ,{ new: true });
+    // new: true gives the old document in return value 
+
+  }
+
+  catch(err){
+
+    res.status(500).json({ error: err.message });
+  }
+
+
+
+
+}
+
+
+export const deleteProblem = async (req, res) => {
+
+const {id} = req.params;
+  if(!id){
+    return res.status(400).json({ message: "Problem ID is required" });
+  }
+try{
+  const dsaproblem =  await Problem.findByIdAndDelete(id);
+  if(!dsaproblem){
+    return res.status(404).json({ message: "Problem not found" });
+  }
+  res.status(200).json({ message: "Problem deleted successfully" });
+
+}
+  catch(err){
+    res.status(500).json({ error: err.message });
+
+
+}
+}
+
+
+export const getProblemById = async (req, res) => {
+const {id} = req.params;
+  if(!id){
+    return res.status(400).json({ message: "Problem ID is required" });
+  }
+try{
+  const dsaproblem =  await Problem.findById(id);
+  if(!dsaproblem){
+    return res.status(404).json({ message: "Problem not found" });
+  }
+  res.status(200).json({ problem : dsaproblem });
+
+}
+  catch(err){
+    res.status(500).json({ error: err.message });
+
+
+}
+
+
+}
+
+
+export const getAllProblem = async (req, res) => {
+
+try{
+  const problems =  await Problem.find({});
+  if(!problems.length){
+    return res.status(404).json({ message: "No problems found" });
+  }
+
+  res.status(200).json({ problems  });
+}
+  catch(err){
+    res.status(500).json({ error: err.message });
+}
+}
 
 
 
