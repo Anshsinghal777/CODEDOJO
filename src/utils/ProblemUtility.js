@@ -1,15 +1,17 @@
 import axios from 'axios';
 
+const waiting = async (joy)=>{
+    return new Promise(resolve => setTimeout(resolve, joy));
+}
 
-
-const submitBatch = async (submissions)=>{
+  export const submitBatch = async (submissions)=>{
 
 
 const options = {
   method: 'POST',
   url: 'https://judge0-ce.p.rapidapi.com/submissions/batch',
   params: {
-    base64_encoded: 'true'
+    base64_encoded: 'false'
   },
   headers: {
     'x-rapidapi-key': 'ab99c6ec42mshfd636ec7c6687efp1b9043jsna684835b0591',
@@ -37,7 +39,7 @@ async function fetchData() {
 
 
 
-const submitToken = async(resultToken)=>{
+ export const submitToken = async(resultToken)=>{
 
 const options = {
   method: 'GET',
@@ -80,6 +82,6 @@ async function fetchData() {
 
 }
 
-export {submitBatch, submitToken};
+
 
 

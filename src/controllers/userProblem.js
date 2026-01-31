@@ -1,56 +1,51 @@
 
 import fetchIdByName from "../../tester2.js";
 import Problem from "../models/problem.js";
-import submitBatch from "../utils/ProblemUtility.js";
-import submitToken from "../utils/ProblemUtility.js";
-const createProblem =  async (req, res) => {
+import {submitBatch} from "../utils/ProblemUtility.js";
+import {submitToken} from "../utils/ProblemUtility.js";
+const createProblem = async (req, res) => {
+  try {
+    const submissions = [];
 
-    try{
-         const {title,description,difficulty,tags, 
-visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator 
-         } =             req.body;
+    for (const solution of req.body.referenceSolution) {
+      const langId = fetchIdByName(solution.language);
+      if (!langId) throw new Error("Unsupported language");
 
-          const submissions = [];
-
-
-            for (const solution of referenceSolution) {
-    const langId = fetchIdByName(solution.language);
-
-    if (langId === 0) {
-      throw new Error(`Language not supported: ${solution.language}`);
+      for (const testCase of req.body.visibleTestCases) {
+        submissions.push({
+          language_id: langId,
+          source_code: solution.completeCode,
+          stdin: testCase.input,
+          expected_output: testCase.output
+        });
+      }
     }
 
-    for (const testCase of visibleTestCases) {
-      submissions.push({
-        language_id: langId,
-        source_code: solution.completeCode,
-        stdin: testCase.input,
-        expected_output: testCase.output
-      });
+    const submitResult = await submitBatch(submissions);
+    const tokens = submitResult.map(r => r.token);
+    const testResult = await submitToken(tokens);
+
+    for (const test of testResult) {
+      if (test.status?.id !== 3) {
+        console.log(test.status.id);
+        return res.status(400).json({
+          message: "Reference solution failed test cases"
+        });
+      }
     }
+
+    await Problem.create({
+      ...req.body,
+      problemCreator: req.user._id
+    });
+
+    res.status(201).json({ message: "Problem created successfully" });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
+};
 
-  return submissions;
-  if(submissions.length === 0){
-    return res.status(400).json({message : "No valid reference solutions or test cases provided."});
-  }
-
- const submitResult = await  submitBatch(submissions);
-
-
-  
-}
-
-
-
-
-
-       catch(err){
-        res.status(400).json({message : "Internal Server Error", error : err.message});
-    }
-
-
-}
 
 
 export default createProblem;

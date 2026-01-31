@@ -9,16 +9,16 @@ const problemRouter = express.Router();
 
 // create
 problemRouter.post('/create', adminMiddleware, createProblem);
-problemRouter.patch('/:id', updateProblem);
-problemRouter.delete('/:id', deleteProblem);
+// problemRouter.patch('/:id', updateProblem);
+// problemRouter.delete('/:id', deleteProblem);
 
 
 
 
-problemRouter.get('/:id', getProblemById);
-problemRouter.get('/', getAllProblem);
+// problemRouter.get('/:id', getProblemById);
+// problemRouter.get('/', getAllProblem);
 
-problemRouter.get('/user', solvedProblemsByUser);
+// problemRouter.get('/user', solvedProblemsByUser);
 
 // fetch
 // update

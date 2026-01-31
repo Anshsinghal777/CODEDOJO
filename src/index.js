@@ -1,6 +1,7 @@
 
 import dotenv from 'dotenv';
 dotenv.config();
+console.log('DB_CONNECT_STRING:', process.env.DB_CONNECT_STRING);
 
 import express from 'express';
 
@@ -8,7 +9,7 @@ import main from './config/db.js';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/userAuth.js';
 import redisClient from './config/redis.js';
-import problemRouter from './routes/problem.js';
+import problemRouter from './routes/problemCreator.js';
 
 
 

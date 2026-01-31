@@ -18,9 +18,9 @@ const problemSchema = new Schema({
         required : true,
     },
     tags : {
-        type : String,
+        type : [String],
         required : true,
-         enum : ['arrays','strings','linkedlist','math', 'stack','quene' ,'dynamicprogramming','greedy','trees','graphs','sorting','searching'],
+         enum : ['arrays','strings','linkedlist','math', 'stack','queue' ,'dynamicprogramming','greedy','trees','graphs','sorting','searching'],
 
     },
     visibleTestCases : [{
@@ -37,7 +37,7 @@ const problemSchema = new Schema({
 
     startCode:[{
         language : { type : String , required : true },
-        initailCode : { type : String , required : true}
+        initialCode : { type : String , required : true}
     }],
     referenceSolution : [{
         language : { type : String , required : true },
