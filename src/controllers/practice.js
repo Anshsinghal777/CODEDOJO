@@ -43,6 +43,20 @@ arr.map((item)=>{
     return <p>{item.name}</p>
 })
     }
+
+
+
+
+      {/* const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    const users = await User.find()
+      .skip(skip)
+      .limit(limit);
+
+    res.json(users); */}
 </div>
 
 

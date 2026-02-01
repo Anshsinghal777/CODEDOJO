@@ -172,7 +172,7 @@ const {id} = req.params;
     return res.status(400).json({ message: "Problem ID is required" });
   }
 try{
-  const dsaproblem =  await Problem.findById(id);
+  const dsaproblem =  await Problem.findById(id).select('-hiddenTestCases -problemCreator'); 
   if(!dsaproblem){
     return res.status(404).json({ message: "Problem not found" });
   }
@@ -192,7 +192,7 @@ try{
 export const getAllProblem = async (req, res) => {
 
 try{
-  const problems =  await Problem.find({});
+  const problems =  await Problem.find({}).select(' _id title tags difficulty');
   if(!problems.length){
     return res.status(404).json({ message: "No problems found" });
   }
