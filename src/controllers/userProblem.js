@@ -3,6 +3,7 @@ import fetchIdByName from "../../tester2.js";
 import Problem from "../models/problem.js";
 import {submitBatch} from "../utils/ProblemUtility.js";
 import {submitToken} from "../utils/ProblemUtility.js";
+import User from "../models/user.js";
  export const createProblem = async (req, res) => {
   try {
 
@@ -130,6 +131,7 @@ visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator
 
     const updatedProblem = await Problem.findByIdAndUpdate(id,{...req.body},{runValidators:true} ,{ new: true });
     // new: true gives the old document in return value 
+    res.status(200).json({ message: "Problem updated successfully" });
 
   }
 
@@ -202,6 +204,20 @@ try{
   catch(err){
     res.status(500).json({ error: err.message });
 }
+}
+
+
+export const solvedProblemsByUser = async (req, res) => {
+try{
+  const userId = req.user._id;
+  const user = await User.findById(userId).populate('problemSolved', '_id title difficulty tags');
+
+  return res.status(200).json({ solvedProblems: user.problemSolved });
+
+} catch(err){
+    res.status(500).json({ error: err.message });
+}
+
 }
 
 

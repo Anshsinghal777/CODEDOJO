@@ -2,7 +2,7 @@
 import express from 'express';
 import adminMiddleware from '../middleware/adminMiddleware.js';
 import userMiddleware from '../middleware/userMiddleware.js';
-import {createProblem , updateProblem, deleteProblem, getProblemById , getAllProblem} from '../controllers/userProblem.js';
+import {createProblem , updateProblem, deleteProblem, getProblemById , getAllProblem,solvedProblemsByUser} from '../controllers/userProblem.js';
 
 
 

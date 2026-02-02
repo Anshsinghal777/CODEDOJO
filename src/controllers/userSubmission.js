@@ -81,6 +81,10 @@ if (test.status?.id === 3) {
             submittedResult.testCasesPassed = testCasesPassed;
             submittedResult.errorMessage = errorMessage ;
             await submittedResult.save();
+         if(   !req.user.problemSolved.includes(problemId)) {
+          req.user.problemSolved.push(problemId);
+          await req.user.save();
+         }
             res.status(200).json({ message: 'Submission evaluateed' });
 }
 catch(err){
@@ -89,3 +93,52 @@ catch(err){
 
 }
 
+
+export const runCode = async (req,res)=>{
+
+try{
+const userId = req.user._id;
+    const problemId = req.params.id;
+
+    const { code, language } = req.body;
+    if (!code || !language || !problemId || !userId) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+    const problem = await Problem.findById(problemId);
+
+
+
+
+const langId = fetchIdByName(language);
+const submissions = [];
+
+      for (const testCase of problem.visibleTestCases) {
+        submissions.push({
+          language_id: langId,
+          source_code: code,
+          stdin: testCase.input,
+          expected_output: testCase.output
+        });
+      }
+
+      
+          const submitResult = await submitBatch(submissions);
+          const tokens = submitResult.map(r => r.token);
+          const testResult = await submitToken(tokens);
+
+
+
+         
+
+              
+
+            
+
+         
+            res.status(200).json({ message:  testResult });
+}
+catch(err){
+    res.status(500).json({ message: 'Server Error', error: err.message });
+}
+  
+}
