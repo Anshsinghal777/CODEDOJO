@@ -4,6 +4,7 @@ import validate from '../utils/validator.js';
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import redisClient from '../config/redis.js';
+import Submission from '../models/submission.js';
 const register = async (req, res) => {
 
     try{
@@ -98,4 +99,44 @@ const adminRegister = async (req, res) => {
 
 }
 
-export { register, login , logout , adminRegister}; 
+
+const deleteProfile = async (req, res) => {
+try{
+
+const id = req.user._id;
+await User.findByIdAndDelete(id);
+await Submission.deleteMany({userId : id});
+res.status(200).json({message : "Profile deleted successfully"});
+
+
+
+}
+
+    catch(err){
+
+res.status(400).json({message : "Internal Server Error", error : err.message});
+    }
+
+
+
+}
+
+const submittedProblem = async (req, res) => {
+try{
+
+    const userId = req.user._id;
+    const problemId =  req.params.pid;
+    const ans = await Submission.find({userId  ,  problemId});
+    res.status(200).json({submissions : ans} );
+    if( ans.length === 0){
+        return res.status(404).json({message : "No submissions found for this problem"});
+    }
+}
+
+    catch(err){
+res.status(400).json({message : "Internal Server Error", error : err.message});
+    }
+}
+
+
+export { register, login , logout , adminRegister , deleteProfile, submittedProblem}; 
