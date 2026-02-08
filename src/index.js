@@ -11,13 +11,17 @@ import authRouter from './routes/userAuth.js';
 import redisClient from './config/redis.js';
 import problemRouter from './routes/problemCreator.js';
 import submitRouter from './routes/submit.js';
+import cors from 'cors';
 
 
 
 
 
 const app = express();
-
+app.use(cors({
+    origin : ['http://localhost:5173', 'http://localhost:5174'],
+    credentials : true
+}));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -27,9 +31,11 @@ app.use('/submission', submitRouter);
 
 const InitializeConnections = async () => {
     try{
-       await Promise.all([
+       await Promise.allSettled([
         main(),
-        redisClient.connect()
+        redisClient.connect().catch(err => {
+            console.log("Redis connection failed, continuing without Redis:", err.message);
+        })
        ]);
        console.log("All connections established successfully");
          app.listen(process.env.PORT,()=>{
