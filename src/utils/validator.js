@@ -13,8 +13,10 @@ if(!IsAllowed){
 if(!validator.isEmail(data.emailID)){
     throw new Error('Invalid Email ID');
 }
-if(!validator.isStrongPassword(data.password)){
-    throw new Error('Password is not strong enough');
+// Check password requirements: 8+ chars, lowercase, uppercase, number
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+if(!passwordRegex.test(data.password)){
+    throw new Error('Password must be at least 8 characters with lowercase, uppercase, and number');
 }
 }
 export default validate;

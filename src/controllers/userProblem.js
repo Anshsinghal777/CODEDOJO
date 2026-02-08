@@ -199,7 +199,7 @@ try{
     return res.status(404).json({ message: "No problems found" });
   }
 
-  res.status(200).json({ problems  });
+  res.status(200).json({ problem : problems  });
 }
   catch(err){
     res.status(500).json({ error: err.message });
