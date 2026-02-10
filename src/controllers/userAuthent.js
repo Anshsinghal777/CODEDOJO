@@ -20,7 +20,8 @@ const register = async (req, res) => {
          const reply = {
             emailID : user.emailID,
             firstName : user.firstName,
-            _id : user._id
+            _id : user._id,
+            profile_pic : user.profilePicture
             
         }
         res.status(200).json({user : reply,
@@ -57,7 +58,8 @@ const login = async (req, res) => {
         const reply = {
             emailID : user.emailID,
             firstName : user.firstName,
-            _id : user._id
+            _id : user._id,
+             profile_pic : user.profilePicture
             
         }
         res.status(200).json({user : reply,

@@ -22,6 +22,10 @@ const userSchema = new Schema({
         lowercase : true,
         immutable : true,
     },
+ profilePicture: {
+    type: String,
+    default: '/profile-picture.png'  // ✅ FORWARD SLASH!
+},
     age : {
         type :Number,
         min : 6,
