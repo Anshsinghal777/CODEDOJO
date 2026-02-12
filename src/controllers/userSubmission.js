@@ -85,7 +85,7 @@ if (test.status?.id === 3) {
           req.user.problemSolved.push(problemId);
           await req.user.save();
          }
-            res.status(200).json({ message: 'Submission evaluateed' });
+            res.status(200).json({ message: 'Submission evaluated' });
 }
 catch(err){
     res.status(500).json({ message: 'Server Error', error: err.message });
