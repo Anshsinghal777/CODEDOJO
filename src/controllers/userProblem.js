@@ -210,6 +210,10 @@ try{
 export const solvedProblemsByUser = async (req, res) => {
 try{
   const userId = req.user._id;
+  if(!userId){
+      res.status(400).json({ error: "user id nahi mil rahi" });
+  }
+  console.log(userId)
   const user = await User.findById(userId).populate('problemSolved', '_id title difficulty tags');
 
   return res.status(200).json({ solvedProblems: user.problemSolved });

@@ -16,10 +16,10 @@ problemRouter.delete('/delete/:id',adminMiddleware, deleteProblem);
 
 
 
-problemRouter.get('/:id', userMiddleware,getProblemById);
-problemRouter.get('/',userMiddleware, getAllProblem);              
+problemRouter.get('/user', userMiddleware, solvedProblemsByUser);
+problemRouter.get('/', userMiddleware, getAllProblem);
 
-problemRouter.get('/user',userMiddleware, solvedProblemsByUser);
+problemRouter.get('/:id', userMiddleware, getProblemById);
 
 // fetch
 // update
