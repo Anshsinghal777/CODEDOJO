@@ -12,6 +12,8 @@ import redisClient from './config/redis.js';
 import problemRouter from './routes/problemCreator.js';
 import submitRouter from './routes/submit.js';
 import cors from 'cors';
+import userMiddleware from './middleware/userMiddleware.js';
+import { solvedDoubt } from './controllers/userSubmission.js';
 
 
 
@@ -28,6 +30,7 @@ app.use(cookieParser());
 app.use('/user', authRouter);
 app.use('/problem', problemRouter);
 app.use('/submission', submitRouter);
+app.post("/chat/ai" , userMiddleware , solvedDoubt)
 
 const InitializeConnections = async () => {
     try{
