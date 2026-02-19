@@ -25,22 +25,25 @@ const submittedResult = await Submission.create({
     language,
     status: 'pending',
     runtime: 0,
-    testCasesTotal: problem.visibleTestCases.length + problem.hiddenTestCases.length,
+    testCasesTotal: problem.visibleTestCases.length + (problem?.hiddenTestCases?.length || 0),
 
 });
 
 
 const langId = fetchIdByName(language);
 const submissions = [];
+const toBase64 = (str) =>
+  Buffer.from(str ?? "", "utf-8").toString("base64");
+
 
       for (const testCase of problem.visibleTestCases) {
-        submissions.push({
-          language_id: langId,
-          source_code: code,
-          stdin: testCase.input,
-          expected_output: testCase.output
-        });
-      }
+  submissions.push({
+    language_id: langId,
+    source_code: toBase64(code),
+    stdin: toBase64(testCase.input),
+    expected_output: toBase64(testCase.output)
+  });
+}
 
       
           const submitResult = await submitBatch(submissions);
@@ -58,8 +61,8 @@ const submissions = [];
             for (const test of testResult) {
 if (test.status?.id === 3) {
                 testCasesPassed++;
-                runtime += parseFloat(test.time);
-                memory = Math.max(memory, test.memory);
+               runtime += parseFloat(test.time || 0);
+memory = Math.max(memory, test.memory || 0);
               }else {
                 if(test.status?.id === 4){
                    
@@ -81,14 +84,24 @@ if (test.status?.id === 3) {
             submittedResult.testCasesPassed = testCasesPassed;
             submittedResult.errorMessage = errorMessage ;
             await submittedResult.save();
-         if(   !req.user.problemSolved.includes(problemId)) {
-          req.user.problemSolved.push(problemId);
-          await req.user.save();
-         }
+        if (
+  status === "accepted" &&
+  !req.user.problemSolved.some(
+    id => id.toString() === problemId.toString()
+  )
+) {
+  req.user.problemSolved.push(problemId);
+  await req.user.save();
+}
             res.status(200).json({ message: 'Submission evaluated' });
 }
-catch(err){
-    res.status(500).json({ message: 'Server Error', error: err.message });
+catch (err) {
+  console.log("🔥 FULL SUBMIT ERROR:", err);
+  res.status(500).json({
+    message: "Server Error",
+    error: err.message,
+    stack: err.stack
+  });
 }
 
 }
@@ -111,15 +124,19 @@ const userId = req.user._id;
 
 const langId = fetchIdByName(language);
 const submissions = [];
+const toBase64 = (str) =>
+  Buffer.from(str ?? "", "utf-8").toString("base64");
+
 
       for (const testCase of problem.visibleTestCases) {
-        submissions.push({
-          language_id: langId,
-          source_code: code,
-          stdin: testCase.input,
-          expected_output: testCase.output
-        });
-      }
+  submissions.push({
+    language_id: langId,
+    source_code: toBase64(code),
+    stdin: toBase64(testCase.input),
+    expected_output: toBase64(testCase.output)
+  });
+}
+
 
       
           const submitResult = await submitBatch(submissions);
@@ -136,6 +153,7 @@ const submissions = [];
 
          
             res.status(200).json({ message:  testResult });
+            console.log(testResult);
 }
 catch(err){
     res.status(500).json({ message: 'Server Error', error: err.message });
@@ -153,7 +171,7 @@ console.log(req.body);
      
      
        
-const ai = new GoogleGenAI({apiKey : "AIzaSyDLx5_FnMCVvXJt-hwv_GYuVWva-ZmMoAw"});
+const ai = new GoogleGenAI({apiKey : "AIzaSyBHaAcRG14qHJ5H--EoNr-_RrDClozSrms"});
 
 async function main() {
   const response = await ai.models.generateContent({

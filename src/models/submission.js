@@ -24,7 +24,7 @@ const submissionSchema = new Schema({
   'bash',
   'basic',
   'c',
-  'cpp',
+  'C++',
   'csharp',
   'commonlisp',
   'd',

@@ -33,7 +33,15 @@ const problemSchema = new Schema({
         output : { type : String , required : true},
         
     }],
+twrapp:[{
+        // language : { type : String  },
 
+        code : { type : String }
+    }],
+    bwrapp:[{
+        // language : { type : String  },
+        code : { type : String }
+    }],
 
     startCode:[{
         language : { type : String , required : true },

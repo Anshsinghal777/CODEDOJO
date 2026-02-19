@@ -11,7 +11,7 @@ const options = {
   method: 'POST',
   url: 'https://judge0-ce.p.rapidapi.com/submissions/batch',
   params: {
-    base64_encoded: 'false'
+    base64_encoded: 'true'
   },
   headers: {
     'x-rapidapi-key': 'ab99c6ec42mshfd636ec7c6687efp1b9043jsna684835b0591',
@@ -28,7 +28,8 @@ async function fetchData() {
 		const response = await axios.request(options);
 		return response.data;
 	} catch (error) {
-		console.error(error);
+		console.error("submitBatch API Error:", error.response?.data || error.message);
+		throw new Error(`Judge0 Batch API Error: ${error.response?.data?.message || error.message}`);
 	}
 }
 
@@ -46,7 +47,7 @@ const options = {
   url: 'https://judge0-ce.p.rapidapi.com/submissions/batch',
   params: {
     tokens: resultToken.join(","),
-    base64_encoded: 'false',
+    base64_encoded: 'true',
     fields: '*'
   },
   headers: {
@@ -60,7 +61,8 @@ async function fetchData() {
 		const response = await axios.request(options);
 		return response.data;
 	} catch (error) {
-		console.error(error);
+		console.error("submitToken API Error:", error.response?.data || error.message);
+		throw new Error(`Judge0 Token API Error: ${error.response?.data?.message || error.message}`);
 	}
 }
 
@@ -69,10 +71,26 @@ async function fetchData() {
 
  const result =  await fetchData();
 
+  if(!result || !result.submissions) {
+    throw new Error("Invalid response from Judge0 API - no submissions data");
+  }
+
   const IsResultObtained =  result.submissions.every((r)=>r.status_id>2);
 
-  if(IsResultObtained)
-    return result.submissions;
+ if (IsResultObtained) {
+
+  const fromBase64 = (str) =>
+    str ? Buffer.from(str, "base64").toString("utf-8") : null;
+
+  result.submissions.forEach((r) => {
+    r.stdout = fromBase64(r.stdout);
+    r.stderr = fromBase64(r.stderr);
+    r.compile_output = fromBase64(r.compile_output);
+  });
+
+  return result.submissions;
+}
+
 
   
   await waiting(1000);

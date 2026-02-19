@@ -8,7 +8,7 @@ import User from "../models/user.js";
   try {
 
       const {title,description,difficulty,tags, 
-visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator 
+visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator ,bwrapp, twrapp
          } =             req.body;
 
 
@@ -31,11 +31,14 @@ visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator
       if (!langId) throw new Error("Unsupported language");
 
       for (const testCase of visibleTestCases) {
+        if (!testCase.input || !testCase.output) {
+          throw new Error("Test case input and output cannot be empty");
+        }
         submissions.push({
           language_id: langId,
           source_code: solution.completeCode,
-          stdin: testCase.input,
-          expected_output: testCase.output
+          stdin: String(testCase.input).trim(),
+          expected_output: String(testCase.output).trim()
         });
       }
     }
@@ -43,15 +46,18 @@ visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator
     const submitResult = await submitBatch(submissions);
     const tokens = submitResult.map(r => r.token);
     const testResult = await submitToken(tokens);
-
-    for (const test of testResult) {
-      if (test.status?.id !== 3) {
-        console.log(test.status.id);
-        return res.status(400).json({
-          message: "Reference solution failed test cases"
-        });
-      }
-    }
+    
+for (const test of testResult) {
+  console.log("Full test result:", test); // Add this line
+  if (test.status?.id !== 3) {
+    console.log("Compile error:", test.compile_output);
+    console.log("Stderr:", test.stderr);
+    return res.status(400).json({
+      message: "Reference solution failed test cases",
+      error: test.compile_output || test.stderr
+    });
+  }
+}
 
     await Problem.create({
       ...req.body,
@@ -61,6 +67,7 @@ visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator
     res.status(201).json({ message: "Problem created successfully" });
 
   } catch (err) {
+    console.error("Create problem error:", err);
     res.status(500).json({ error: err.message });
   }
 }
@@ -106,11 +113,14 @@ visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator
       if (!langId) throw new Error("Unsupported language");
 
       for (const testCase of visibleTestCases) {
+        if (!testCase.input || !testCase.output) {
+          throw new Error("Test case input and output cannot be empty");
+        }
         submissions.push({
           language_id: langId,
           source_code: solution.completeCode,
-          stdin: testCase.input,
-          expected_output: testCase.output
+          stdin: String(testCase.input).trim(),
+          expected_output: String(testCase.output).trim()
         });
       }
     }
@@ -137,6 +147,7 @@ visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator
 
   catch(err){
 
+    console.error("Update problem error:", err);
     res.status(500).json({ error: err.message });
   }
 

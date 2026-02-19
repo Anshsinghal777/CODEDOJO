@@ -14,6 +14,7 @@ import submitRouter from './routes/submit.js';
 import cors from 'cors';
 import userMiddleware from './middleware/userMiddleware.js';
 import { solvedDoubt } from './controllers/userSubmission.js';
+import videoRouter from './routes/videoSolution.js';
 
 
 
@@ -31,6 +32,7 @@ app.use('/user', authRouter);
 app.use('/problem', problemRouter);
 app.use('/submission', submitRouter);
 app.post("/chat/ai" , userMiddleware , solvedDoubt)
+app.use('/video' ,videoRouter )
 
 const InitializeConnections = async () => {
     try{
