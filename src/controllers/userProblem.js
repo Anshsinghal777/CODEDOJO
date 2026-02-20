@@ -79,7 +79,7 @@ export const updateProblem = async (req, res) => {
 
   const    {id} = req.params;
         const {title,description,difficulty,tags, 
-visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator 
+visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator ,bwrapp, twrapp 
          } =             req.body;
 
      if (
@@ -129,14 +129,18 @@ visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator
     const tokens = submitResult.map(r => r.token);
     const testResult = await submitToken(tokens);
 
-    for (const test of testResult) {
-      if (test.status?.id !== 3) {
-        console.log(test.status.id);
-        return res.status(400).json({
-          message: "Reference solution failed test cases"
-        });
-      }
-    }
+        
+for (const test of testResult) {
+  console.log("Full test result:", test); // Add this line
+  if (test.status?.id !== 3) {
+    console.log("Compile error:", test.compile_output);
+    console.log("Stderr:", test.stderr);
+    return res.status(400).json({
+      message: "Reference solution failed test cases",
+      error: test.compile_output || test.stderr
+    });
+  }
+}
 
 
     const updatedProblem = await Problem.findByIdAndUpdate(id,{...req.body},{runValidators:true} ,{ new: true });
