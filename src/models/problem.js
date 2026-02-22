@@ -26,7 +26,7 @@ const problemSchema = new Schema({
     visibleTestCases : [{
         input : { type : String , required : true },
         output : { type : String , required : true},
-        explanation : { type : String , required : true}
+        explanation : { type : String }
     }],
      hiddenTestCases : [{
         input : { type : String , required : true },

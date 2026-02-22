@@ -116,12 +116,22 @@ visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator
         if (!testCase.input || !testCase.output) {
           throw new Error("Test case input and output cannot be empty");
         }
+        // submissions.push({
+        //   language_id: langId,
+        //   source_code: solution.completeCode,
+        //   stdin: String(testCase.input).trim(),
+        //   // expected_output: String(testCase.output).trim()
+        //   expected_output: String(testCase.output).trim() + "\n"
+        // });
+
+
+
         submissions.push({
-          language_id: langId,
-          source_code: solution.completeCode,
-          stdin: String(testCase.input).trim(),
-          expected_output: String(testCase.output).trim()
-        });
+  language_id: langId,
+  source_code: Buffer.from(solution.completeCode).toString("base64"),
+  stdin: Buffer.from(String(testCase.input).trim()).toString("base64"),
+  expected_output: Buffer.from(String(testCase.output).trim() + "\n").toString("base64")
+});
       }
     }
 
@@ -143,7 +153,11 @@ for (const test of testResult) {
 }
 
 
-    const updatedProblem = await Problem.findByIdAndUpdate(id,{...req.body},{runValidators:true} ,{ new: true });
+   const updatedProblem = await Problem.findByIdAndUpdate(
+    id,
+    { ...req.body },
+    { new: true, runValidators: true }
+);
     // new: true gives the old document in return value 
     res.status(200).json({ message: "Problem updated successfully" });
 
