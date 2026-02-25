@@ -116,13 +116,6 @@ visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator
         if (!testCase.input || !testCase.output) {
           throw new Error("Test case input and output cannot be empty");
         }
-        // submissions.push({
-        //   language_id: langId,
-        //   source_code: solution.completeCode,
-        //   stdin: String(testCase.input).trim(),
-        //   // expected_output: String(testCase.output).trim()
-        //   expected_output: String(testCase.output).trim() + "\n"
-        // });
 
 
 
