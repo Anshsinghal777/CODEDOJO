@@ -6,6 +6,8 @@ import {submitToken} from "../utils/ProblemUtility.js";
 import User from "../models/user.js";
  export const createProblem = async (req, res) => {
   try {
+    const toBase64 = (str) =>
+  Buffer.from(str, "utf-8").toString("base64");
 
       const {title,description,difficulty,tags, 
 visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator ,bwrapp, twrapp
@@ -34,12 +36,12 @@ visibleTestCases, hiddenTestCases, startCode, referenceSolution , problemCreator
         if (!testCase.input || !testCase.output) {
           throw new Error("Test case input and output cannot be empty");
         }
-        submissions.push({
-          language_id: langId,
-          source_code: solution.completeCode,
-          stdin: String(testCase.input).trim(),
-          expected_output: String(testCase.output).trim()
-        });
+      submissions.push({
+  language_id: langId,
+  source_code: toBase64(solution.completeCode),
+  stdin: toBase64(String(testCase.input).trim()),
+  expected_output: toBase64(String(testCase.output).trim())
+});
       }
     }
 
