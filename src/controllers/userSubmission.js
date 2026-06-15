@@ -171,7 +171,7 @@ console.log(req.body);
      
      
        
-const ai = new GoogleGenAI({apiKey : "AIzaSyBHaAcRG14qHJ5H--EoNr-_RrDClozSrms"});
+const ai = new GoogleGenAI({apiKey : "AIzaSyDPkdCYIXnJP6jCzQP6l0kc4LSJoWIgCxQ"});
 
 async function main() {
   const response = await ai.models.generateContent({
