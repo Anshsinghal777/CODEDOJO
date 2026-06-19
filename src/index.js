@@ -63,3 +63,20 @@ InitializeConnections();
 // git push
 
 
+
+// pcsk_3xavHU_PvVyasHZ1P8oNKM1r77pcYpfjJeeeZscSUk5N8xeZUmvnQgbgWtFE9khkL7N4Xc
+
+
+
+// pcsk_4oPd6X_KHiCQrF5MguP1YtgeqwzpWt533wKfkgJ65YU8RoNgvbonPPthbS5eqBsA1iMACG
+
+
+
+// import { Pinecone } from '@pinecone-database/pinecone';
+
+// const pc = new Pinecone({
+//   apiKey: '******************'
+// });
+// const index = pc.index('quickstart');
+
+
