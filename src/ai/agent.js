@@ -21,7 +21,7 @@ model.bindTools([
 
 const result =
 await llmWithTools.invoke(
- "Recommend binary search problems"
+ "stack ki problems bata"
 );
 
 console.log(result.tool_calls);
@@ -42,7 +42,7 @@ await model.invoke(`
 You are CodeDojo Mentor.
 
 User Question:
-Recommend binary search problems.
+stack ki problems bata.
 
 Problems:
 ${toolResult}
@@ -51,6 +51,7 @@ Give:
 1. Short recommendation
 2. One-line reason for each problem
 3. Max 80 words total
+4. Reply in simple english
 
 Be concise.
 `);
