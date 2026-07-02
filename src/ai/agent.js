@@ -21,7 +21,7 @@ model.bindTools([
 
 const result =
 await llmWithTools.invoke(
- "stack ki problems bata"
+ "give me stack questions"
 );
 
 console.log(result.tool_calls);
@@ -42,7 +42,7 @@ await model.invoke(`
 You are CodeDojo Mentor.
 
 User Question:
-stack ki problems bata.
+give me stack questions.
 
 Problems:
 ${toolResult}
