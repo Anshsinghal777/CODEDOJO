@@ -6,12 +6,12 @@
 
 import { createClient } from 'redis';
 
-const redisClient = createClient({
-   username: 'default',
-    password: 'mcdD6V6lgDqy2HiaYvOUcVjUWNlVvUls',
+const redisClient =  createClient({
+    username: 'default',
+    password: 'dZtDITz8O3cU8G7A4c1YB5NjxEOy0fDd',
     socket: {
-        host: 'redis-14503.crce300.ap-south-1-2.ec2.cloud.redislabs.com',
-        port: 14503
+        host: 'redis-10785.crce179.ap-south-1-1.ec2.cloud.redislabs.com',
+        port: 10785
     }
 });
 
@@ -23,12 +23,14 @@ export default redisClient;
 
 
 
+// import { createClient } from 'redis';
+
 // const client = createClient({
 //     username: 'default',
-//     password: 'mcdD6V6lgDqy2HiaYvOUcVjUWNlVvUls',
+//     password: 'dZtDITz8O3cU8G7A4c1YB5NjxEOy0fDd',
 //     socket: {
-//         host: 'redis-14503.crce300.ap-south-1-2.ec2.cloud.redislabs.com',
-//         port: 14503
+//         host: 'redis-10785.crce179.ap-south-1-1.ec2.cloud.redislabs.com',
+//         port: 10785
 //     }
 // });
 
@@ -39,4 +41,3 @@ export default redisClient;
 // await client.set('foo', 'bar');
 // const result = await client.get('foo');
 // console.log(result)  // >>> bar
-
